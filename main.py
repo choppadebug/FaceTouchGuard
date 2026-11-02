@@ -1,6 +1,7 @@
 import time
 from pathlib import Path
 from touch_detector_v2 import FaceTouchDetector
+from notifier import TouchNotifier
 
 import cv2
 import mediapipe as mp
@@ -81,7 +82,7 @@ def main():
         Vision.FaceLandmarker.create_from_options(face_options) as face_detector,
         Vision.HandLandmarker.create_from_options(hand_options) as hand_detector
     ):
-        # IMPORTANT: Use the camera index/backend that worked in Step 1.
+        # Camera index/backend
         cap = cv2.VideoCapture(1, cv2.CAP_MSMF)
 
         if not cap.isOpened():
@@ -90,6 +91,7 @@ def main():
         start_time = time.monotonic()
         last_timestamp_ms = -1
         touch_detector = FaceTouchDetector()
+        notifier = TouchNotifier(cooldown_seconds=8.0)
 
         try:
             while True:
@@ -157,9 +159,17 @@ def main():
                 )
 
                 if touch_count > previous_count:
+                    now = time.monotonic()
+
+                    notification_sent = notifier.notify(
+                        event_count=touch_count,
+                        now=now
+                    )
+
                     print(
                         f"[{time.strftime('%H:%M:%S')}] "
                         f"New face-touch event #{touch_count}"
+                        f"Notification: {notification_sent}"
                     )
 
                 
