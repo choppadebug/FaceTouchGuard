@@ -1,6 +1,6 @@
 import time
 from pathlib import Path
-from touch_detector import FaceTouchDetector
+from touch_detector_v2 import FaceTouchDetector
 
 import cv2
 import mediapipe as mp
@@ -133,6 +133,13 @@ def main():
                 for hand in hand_result.hand_landmarks:
                     draw_hand(frame, hand)
 
+                hand_labels = [
+                    categories[0].category_name
+                    if categories else f"hand-{i}"
+                    for i, categories in enumerate(hand_result.handedness)
+                ]
+
+                previous_count = touch_detector.touch_count
 
                 # Analyze face-hand proximity.
                 (
@@ -145,8 +152,15 @@ def main():
                     face_result.face_landmarks,
                     hand_result.hand_landmarks,
                     frame.shape,
-                    time.monotonic()
+                    time.monotonic(),
+                    hand_labels=hand_labels
                 )
+
+                if touch_count > previous_count:
+                    print(
+                        f"[{time.strftime('%H:%M:%S')}] "
+                        f"New face-touch event #{touch_count}"
+                    )
 
                 
                 # Explain the detector's current state.
