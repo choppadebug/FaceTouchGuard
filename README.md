@@ -117,7 +117,7 @@ The detector was evaluated manually on **8 scenarios × 5 trials = 40 trials per
 ### 1. Clone the repository and prepare Python
 
 ```powershell
-git clone <YOUR-REPOSITORY-URL>
+git clone https://github.com/choppadebug/FaceTouchGuard
 cd face-touch-guard
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
