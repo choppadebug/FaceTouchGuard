@@ -135,7 +135,7 @@ Or, if the repository includes the alert implementation's requirements file:
 python -m pip install -r requirements-alerts.txt
 ```
 
-`windows-toasts` was used in the earlier notification-only prototype, but **is not required by the integrated `main_alerts.py` application**; Annoyance Mode uses Qt and local sound cues instead.
+`windows-toasts` was used in the earlier notification-only prototype, but **is not required by the integrated `app.main_alerts` application**; Annoyance Mode uses Qt and local sound cues instead.
 
 ### 3. Download the MediaPipe models
 
@@ -150,17 +150,17 @@ Invoke-WebRequest -Uri "https://storage.googleapis.com/mediapipe-models/hand_lan
 ### 4. Run the integrated application
 
 ```powershell
-python main_alerts.py
+python -m app.main_alerts
 ```
 
-The preview displays the camera feed, tracked face/hand landmarks, touch-event counter, and active alert stage. You can **hide the preview while monitoring continues** via the system tray. If camera initialization fails, adjust these constants near the top of `main_alerts.py` to the index/backend that works for your webcam:
+The preview displays the camera feed, tracked face/hand landmarks, touch-event counter, and active alert stage. You can **hide the preview while monitoring continues** via the system tray. If camera initialization fails, adjust these constants near the top of `app/main_alerts.py` to the index/backend that works for your webcam:
 
 ```python
-CAMERA_INDEX = 0
+CAMERA_INDEX = 1
 CAMERA_BACKEND = cv2.CAP_MSMF
 ```
 
-The older notification-only entry point (`python main.py`) can still be kept for comparison if it exists in your repository; the integrated app runs from **`main_alerts.py`**.
+The older notification-only prototype is available for comparison with `python -m legacy.main` (install `windows-toasts` separately). The integrated app runs with **`python -m app.main_alerts`**.
 
 ## Controls
 
@@ -183,7 +183,7 @@ When the system tray is unavailable, keep the preview visible so you can access 
 ### A. Test the alerts without a webcam
 
 ```powershell
-python demo_alerts.py
+python -m app.demo_alerts
 ```
 
 Click **Start simulated touch**, then observe the three stages at approximately 0.35 s, 1.5 s, and 3.0 s. Click **Release simulated touch** and confirm that the overlay and buzzer stop. You can also test the **Mute** button. The demo automatically stops the simulated touch after 9 seconds.
@@ -191,7 +191,7 @@ Click **Start simulated touch**, then observe the three stages at approximately 
 ### B. Run automated alert-timeline tests
 
 ```powershell
-python -m unittest -v test_alert_logic.py
+python -m unittest -v tests.test_alert_logic
 ```
 
 The tests cover the escalation thresholds, stopping when current proximity disappears, avoiding replay after a brief tracking gap, resetting for a new event, and waiting for detector confirmation before alerting.
@@ -211,20 +211,19 @@ For detection-accuracy evaluations, record **new event-counter increments**, not
 
 ```text
 face-touch-guard/
-├── main_alerts.py          # Integrated Qt app: webcam, preview, tray and alerts
-├── touch_detector.py       # V2.2 geometric + temporal face-touch detector
-├── alert_logic.py          # Three-stage alert timeline
-├── alert_overlay.py        # Click-through desktop border and warning panel
-├── alert_audio.py          # Locally generated Windows sounds
-├── demo_alerts.py          # Demo without a webcam
-├── test_alert_logic.py     # Automated tests for the alert state machine
-├── requirements-alerts.txt # Dependencies for the integrated application
-├── models/                 # Locally downloaded MediaPipe models
-├── main.py                 # Optional earlier OpenCV/notification prototype
-└── notifier.py             # Optional earlier native-toast notification module
+├── app/                    # Integrated Qt app and webcam-free alert demo
+│   ├── main_alerts.py
+│   └── demo_alerts.py
+├── detection/              # V2.2 face-touch detector
+│   └── touch_detector_v2.py
+├── alerts/                 # Alert timeline, overlay, and audio
+├── legacy/                 # Earlier notification app, V1 detector, and toast smoke test
+├── tests/                  # Alert timeline tests
+├── models/                 # MediaPipe model bundles
+└── requirements-alerts.txt
 ```
 
-The two older files are shown as **optional**: the integrated entry point does not depend on them.
+Run the module commands above from the repository root. The integrated app does not depend on `legacy/`.
 
 ## Privacy, limitations and safety
 

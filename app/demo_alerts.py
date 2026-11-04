@@ -1,6 +1,6 @@
 """Demo three-stage alerts WITHOUT opening the webcam.
 
-Run: python demo_alerts.py
+Run: python -m app.demo_alerts
 Start a simulated touch and release it from the small controls window.
 Automatic safety cutoff is 9 seconds.
 """
@@ -9,9 +9,9 @@ import time
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel
 
-from alert_audio import AlertAudio
-from alert_overlay import AlertOverlay
-from alert_logic import AlertTimeline
+from alerts.alert_audio import AlertAudio
+from alerts.alert_overlay import AlertOverlay
+from alerts.alert_logic import AlertTimeline
 
 
 class Demo(QWidget):

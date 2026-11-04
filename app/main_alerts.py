@@ -1,6 +1,6 @@
 """Face Touch Guard with three-stage audio + click-through desktop overlay.
 
-Run: python main_alerts.py
+Run: python -m app.main_alerts
 """
 import time
 from pathlib import Path
@@ -14,16 +14,16 @@ from PySide6.QtWidgets import (
     QPushButton, QSystemTrayIcon, QVBoxLayout, QWidget,
 )
 
-from alert_audio import AlertAudio
-from alert_logic import AlertTimeline
-from alert_overlay import AlertOverlay
-from touch_detector_v2 import FaceTouchDetector
+from alerts.alert_audio import AlertAudio
+from alerts.alert_logic import AlertTimeline
+from alerts.alert_overlay import AlertOverlay
+from detection.touch_detector_v2 import FaceTouchDetector
 
 
-# Always match this to the webcam/backend in current main.py.
+# Match these to the webcam/backend in legacy/main.py if needed.
 CAMERA_INDEX = 1
 CAMERA_BACKEND = cv2.CAP_MSMF
-MODEL_DIR = Path(__file__).resolve().parent / "models"
+MODEL_DIR = Path(__file__).resolve().parent.parent / "models"
 HAND_CONNECTIONS = [
     (0, 1), (1, 2), (2, 3), (3, 4),
     (0, 5), (5, 6), (6, 7), (7, 8),
@@ -164,7 +164,7 @@ class Guard:
         if not self.cap.isOpened():
             raise RuntimeError(
                 "Camera unavailable. Copy the working VideoCapture index/backend "
-                "from main.py into CAMERA_INDEX / CAMERA_BACKEND."
+                "from legacy/main.py into CAMERA_INDEX / CAMERA_BACKEND."
             )
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)

@@ -1,6 +1,6 @@
-"""Run with: python -m unittest -v test_alert_logic.py"""
+"""Run with: python -m unittest -v tests.test_alert_logic"""
 import unittest
-from alert_logic import AlertTimeline
+from alerts.alert_logic import AlertTimeline
 
 
 class AlertTimelineTests(unittest.TestCase):

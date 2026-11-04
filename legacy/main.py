@@ -1,14 +1,14 @@
 import time
 from pathlib import Path
-from touch_detector_v2 import FaceTouchDetector
-from notifier import TouchNotifier
+from detection.touch_detector_v2 import FaceTouchDetector
+from legacy.notifier import TouchNotifier
 
 import cv2
 import mediapipe as mp
 
 
 # Paths to the pretrained models
-MODEL_DIR = Path(__file__).resolve().parent / "models"
+MODEL_DIR = Path(__file__).resolve().parent.parent / "models"
 
 # Connections between hand joints (MediaPipe indices)
 HAND_CONNECTIONS = [
